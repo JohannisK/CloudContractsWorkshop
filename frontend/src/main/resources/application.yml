@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 6
+  client:
+    registerWithEureka: false
+    registryFetchIntervalSeconds: 1
+
+numbers-service:
+  ribbon:
+    ServerListRefreshInterval: 1000
+
+
+#TODO 2.2
