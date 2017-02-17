@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spring cloud contracts workshop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Calculate prime numbers</h1>
+<form action="#" th:action="@{''}" th:object="${numbersform}" method="post">
+    <p>From: <input type="text" th:field="*{from}" value="0"/></p>
+    <p>To: <input type="text" th:field="*{to}" value="100"/></p>
+    <p><input type="submit" value="Submit"/></p>
+</form>
+
+<form action="#" th:action="@{''}" method="post">
+    <input type="hidden" name="from" value="10000"/>
+    <input type="hidden" name="to" value="11000"/>
+    <input type="submit" value="Submit 10000-11000"/>
+</form>
+
+<div th:if="${primenumbers != null}">
+    <p>Took: <span th:text="${duration}"></span>ms by instance <span th:text="${instanceId}"></span>.</p>
+    <p>Prime numbers: <span th:text="${primenumbers}"></span></p>
+</div>
+</body>
+</html>

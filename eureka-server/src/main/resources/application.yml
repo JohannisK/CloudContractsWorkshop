@@ -1,0 +1,7 @@
+server:
+  port: 8761
+
+eureka:
+  nl.johannisk.cloud.frontend.client:
+    registerWithEureka: false
+    fetchRegistry: false
