@@ -26,6 +26,12 @@ The modules in this project are a simplified version of the spring cloud worksho
 ### About Cloud Contracts
 Cloud Contracts is an implementation for Spring of Consumer Driven Testing. The mechanism provides a way for the consumer of an API to define tests. The idea behind the mechanism is that the consumer of an API creates a test suite for the subset of endpoints, and the subset of data the api is actually using. These tests should also be available at the api producer side and be part of the build process. When a producer changes the API the build should fail when consumer test fail, preventing failure in clients. Based on the consumer contract the consumer can generate stubs to be used in it's own unit tests. Spring has added the Spring Cloud Contracs libraries to implement Consumer Driven Testing, hinting at it's usefulness for Microservice architectures. Consumer Driven Testing can however, be implemented for any API.
 
+## Task 0: 
+Start all the applications using the main function in the different Application files in the 3 modules. Everything should start normally. You can start several instances of the numbers-service module.<br>
+Navigating to http://127.0.0.1:8761 will open the eureka dashboard, listing one (or more) numbers-service instances.<br>
+Navigating to http://127.0.0.1:8080 will open the frontend application where you can request prime numbers.<br>
+Stop all the instances.
+
 ## Task 1: Adding support for cloud contracts to the producers code
 
 ### Introduction
@@ -58,7 +64,8 @@ Spring Cloud Contracts uses groovy files to create the consumer test suite. The 
 	</build>	
 > This build plugin can generate unit tests based on contracts. Note the baseClassForTests property, we need to supply a base class for generated tests
 
-**Task 1.3** Create a new test class in the numbers-service module in the package `nl.johannisk.cloud.contract` named `BaseTest`
+**Task 1.3** Create a new test class in the numbers-service module in the package `nl.johannisk.cloud.contract` named `BaseTest`. You might need to create the test folder first, make sure you create the BaseTest in the correct test package.
+> The full path from the projecet root should be numbers-service -> src -> test -> java
 	
 	package nl.johannisk.cloud.contract;
 	
@@ -160,7 +167,8 @@ Cloud Contracts uses two libraries to accomplish this `spring-cloud-contract-wir
 > The "ids" property will download the stubs for the repository identifier en configure the port which it is run on. It's format is:<br> `<groupId>:<artifactId>:<version ... + means latest>:<submodule>:<port ... 0 means random>`<br>
 > The "work-offline" property will tell stubrunner to download the artifact from your local .m2 repository.
 
-**Task 2.3** Create a new test class in the frontend module in the package `nl.johannisk.cloud.frontend.client` named `NumberServiceClientTest`
+**Task 2.3** Create a new test class in the frontend module in the package `nl.johannisk.cloud.frontend.client` named `NumberServiceClientTest`. You might need to create the test folder first, make sure you create the NumberServiceClientTest in the correct test package.
+> The full path from the projecet root should be frontend -> src -> test -> java
 
 	package nl.johannisk.cloud.frontend.client;
 	
@@ -617,12 +625,14 @@ The producer has notified the consumer that the service is implemented and will 
     
         assertTrue(response.getFibonacciNumbers().equals(fibonacci));
     }
-> Here we changed the name of the Test (which is not needed, but defines the test better), and used our new Request implementation to match the contract again.
+> Here we changed the name of the Test (which is not needed, but defines the test better), and used our new Request implementation to match the contract again. Note that the expected list also changed.
 
 **Task 5.4** Run `mvn clean install` in the frontend module. It should compile without errors.
 
 ##Conclusion
-Cloud Contracts provide a very useful mechanism to generate extra tests and stubs to verify the integration between services. In my opinion one of the greatest features is that the producer and the consumer al talking to the same contract and are both obligated to maintain the contract when making changes to the client or the producer. The consumer needs the changes to generate the correct stubs, while the producer needs the changes because otherwise the generated tests will fail. A possible pittfall is that the contract only needs to be changed when either side wants to make breaking changes or add functionality. When functionality or data is removed from the client this wont be breaking change to the stubs. This might clutter the code.
+The frontend should now be able to connect to the new numbers-service endpoint. This is the end of this workshop, but you can implement the client further to actually use the service in it's frontend. This is task 6.<br>
+Cloud Contracts provide a very useful mechanism to generate extra tests and stubs to verify the integration between services. In my opinion one of the greatest features is that the producer and the consumer are talking to the same contract and are both obligated to maintain the contract when making changes to the client or the producer. The consumer needs the changes to generate the correct stubs, while the producer needs the changes because otherwise the generated tests will fail. A possible pittfall is that the contract only needs to be changed when either side wants to make breaking changes or add functionality. When functionality or data is no longer used by a client this wont be breaking change to the stubs. This might clutter the contracts making a producer implement a contract with fields which are no longer used.
+Cloud Contracts is in no way a replacement of good team to team communications or the projects own unit tests.
 
 The final task:
 **Task 6** Create a nice frontend for the fibonacci service so we can verify manually that it works!
