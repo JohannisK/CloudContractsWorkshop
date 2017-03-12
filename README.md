@@ -12,7 +12,7 @@ Quick overview of the modules:
 -*pom.xml* contains the only extra dependency we need to start the eureka server: `spring-cloud-starter-eureka-server`<br>
 -*EurekaServerApplication* is the main class, all that is needed to start the Eureka Server including a complete working fronted is the annotation: `@EnableEurekaServer`
 - **numbers-service** is the microservice in this example. <br>
--*application.yml* contains configuration value 0 for the port of the appliction. This means a random port will be assigned making it possible to run several instances of the microservice on your machine. It also contains some information regarding the EurekaServer<br>
+-*application.yml* contains configuration value 0 for the port of the application. This means a random port will be assigned making it possible to run several instances of the microservice on your machine. It also contains some information regarding the EurekaServer<br>
 -*pom.xml* contains two extra dependencies we need to enable RestControllers and the Discovery Client: `spring-boot-starter-web` and `spring-cloud-starter-eureka`<br>
 -*NumbersServiceApplication* is the main class, by adding the `@EnableDiscoveryClient` annotation the service will register itself with the Eureka discovery server using the name defined in *bootstrap.yml*
 - **frontend** is the frontend of our application. It uses thymeleaf to serve a webinterface. It uses ribbon to implement clientside loadbalancing to the microservices listed by the Eureka Server.<br>
@@ -20,11 +20,11 @@ Quick overview of the modules:
 -*pom.xml* contains some extra dependencies for the frontend. Regarding the microservice it's important to notice `spring-cloud-starter-eureka` and `spring-cloud-starter-ribbon`.<br>
 -*FrontendApplication* is the main class, notice our RestTemplate is `@LoadBalanced` which implements clientside loadbalancing to the services listed by the Eureka Server.
 
-You should have an understanding of this microservice architecture now. If you don't please do the following workshop by JDriven: [https://bitbucket.org/jdriven/spring-cloud-workshop]()
-The modules in this project are a simplified version of the spring cloud workshop.
+You should have an understanding of this microservice architecture now. For a more in-depth look into microservices, check out this [JDriven Spring cloud workshop](https://bitbucket.org/jdriven/spring-cloud-workshop).
+The modules in this project are a simplified version of the spring cloud workshop's.
 
 ### About Cloud Contracts
-Cloud Contracts is an implementation for Spring of Consumer Driven Testing. The mechanism provides a way for the consumer of an API to define tests. The idea behind the mechanism is that the consumer of an API creates a test suite for the subset of endpoints, and the subset of data the api is actually using. These tests should also be available at the api producer side and be part of the build process. When a producer changes the API the build should fail when consumer test fail, preventing failure in clients. Based on the consumer contract the consumer can generate stubs to be used in it's own unit tests. Spring has added the Spring Cloud Contracs libraries to implement Consumer Driven Testing, hinting at it's usefulness for Microservice architectures. Consumer Driven Testing can however, be implemented for any API.
+Cloud Contracts is an implementation for Spring of Consumer Driven Testing. The mechanism provides a way for the consumer of an API to define tests. The idea behind the mechanism is that the consumer of an API creates a test suite for the subset of endpoints, and the subset of data the api is actually using. These tests should also be available at the api producer side and be part of the build process. When a producer changes the API the build should fail when consumer test fail, preventing failure in clients. Based on the consumer contract the consumer can generate stubs to be used in its own unit tests. Spring has added the Spring Cloud Contracs libraries to implement Consumer Driven Testing, hinting at it's usefulness for Microservice architectures. Consumer Driven Testing can however, be implemented for any API.
 
 ## Task 0: 
 Start all the applications using the main function in the different Application files in the 3 modules. Everything should start normally. You can start several instances of the numbers-service module.<br>
@@ -32,10 +32,16 @@ Navigating to http://127.0.0.1:8761 will open the eureka dashboard, listing one 
 Navigating to http://127.0.0.1:8080 will open the frontend application where you can request prime numbers.<br>
 Stop all the instances.
 
-## Task 1: Adding support for cloud contracts to the producers code
+## Task 1: Adding support for cloud contracts to producers' code
 
 ### Introduction
-Spring Cloud Contracts uses groovy files to create the consumer test suite. The groovy definition is used by the library `spring-cloud-starter-contract-verifier` and the `spring-cloud-contract-maven-plugin` which are intended for the producer side of the api. This plugin uses a base test class and the groovy files to generate a set of unit tests for the producer which validates the contracts. The contracts themselves are definitions of a request with matching response. In the first task the api producer will be modified to support CloudContracts. To verify everything is working a groovy testcase will be added for the existing endpoint, testing the happy flow. This workshop will focus on happy flows, but Cloud Contracts can also be used to define expected responses when the request is not valid.
+Spring Cloud Contracts uses Groovy files to create the consumer test suite.
+The Groovy definition is used by the library `spring-cloud-starter-contract-verifier` and the `spring-cloud-contract-maven-plugin` which are intended for the producer side of the API.
+This plugin uses a base test class and the Groovy files to generate a set of unit tests for the producer which validates the contracts.
+The contracts themselves are definitions of a request with matching response.
+In the first task the API producer will be modified to support CloudContracts.
+To verify everything is working a Groovy testcase will be added for the existing endpoint, testing the happy flow.
+This workshop will focus on happy flows, but Cloud Contracts can also be used to define expected responses when the request is not valid.
 
 **Task 1.1** Add the `spring-cloud-starter-contract-verifier` dependency to the numbers-service module's pom file under TODO 1.1.<br>
 *(If necesary, refresh your maven dependencies!)*
@@ -65,7 +71,7 @@ Spring Cloud Contracts uses groovy files to create the consumer test suite. The 
 > This build plugin can generate unit tests based on contracts. Note the baseClassForTests property, we need to supply a base class for generated tests
 
 **Task 1.3** Create a new test class in the numbers-service module in the package `nl.johannisk.cloud.contract` named `BaseTest`. You might need to create the test folder first, make sure you create the BaseTest in the correct test package.
-> The full path from the projecet root should be numbers-service -> src -> test -> java
+> The full path from the project root should be numbers-service -> src -> test -> java
 	
 	package nl.johannisk.cloud.contract;
 	
@@ -95,7 +101,7 @@ Spring Cloud Contracts uses groovy files to create the consumer test suite. The 
 **Task 1.4** Per default the build task looks for contracts in a test resource folder named `contracts`. Create this folder.
 > The full path from the projecet root should be numbers-service -> src -> test -> resources -> contracts
 
-**Task 1.5** Create a groovy contract in the numbers-service module for the prime numbers call in the test resources contracts folder named `returnPrimesFrom1to10.groovy`
+**Task 1.5** Create a Groovy contract in the numbers-service module for the prime numbers call in the test resources contracts folder named `returnPrimesFrom1to10.groovy`
 
 	package contracts;
 	
@@ -124,7 +130,7 @@ Spring Cloud Contracts uses groovy files to create the consumer test suite. The 
 		}
 	}
 > The groovy file contains a request object and a response object. The contract it defines can be translated to:
-> When I POST to /primenumbers, with a body containing a from = 1  and a to = 10 key/value pair, I expect a status 200 with a body containing the primaNumbers in the given range an the instance id of the service responding.
+> When I POST to /primenumbers, with a body containing a from = 1  and a to = 10 key/value pair, I expect a status 200 with a body containing the primeNumbers in the given range and the instance ID of the service responding.
 > Note the instanceId value. This value is declared for the consumer as a static value, and for the producer as a regular expression. The purpose of this is to illustrate the value of fields can be different for the producer generated tests, and the client generated stubs.
 
 **Task 1.6** run `mvn clean install` in the numbers-service module
@@ -138,11 +144,11 @@ Note the following line in the build log:
 	
 With the new dependency and build plugin, `mvn clean install` now generates a stubs jar, and installs it in the local maven repository.
 
-## Task 2: Adding support for cloud contracts to the consumers code
+## Task 2: Adding support for cloud contracts to consumers' code
 
 ### Introduction
-The tests created in the previous tasks can also be used by the consumer in the form of stubs. This has several advantages during development. You can develop the client using the stubs which means your independent from the producer, and the stubs can also be used to test your client without setting up a full integration environment allowing you to fail fast.
-Cloud Contracts uses two libraries to accomplish this `spring-cloud-contract-wiremock` is used to mock http connections and `spring-cloud-starter-contract-stub-runner` is used to run the stubs generated by the consumer tests. Stubrunner can also mock your cloud tooling like the service discovery service in this workshop, allowing for completely isolated tests of a service. In this task a test wil be added to test the existing API call. The test will use the stubs and an autoconfigured stubrunner to validate the client.
+The tests created in the previous tasks can also be used by the consumer in the form of stubs. This has several advantages during development. You can develop the client using the stubs which means you're independent from the producer, and the stubs can also be used to test your client without setting up a full integration environment allowing you to fail fast.
+Cloud Contracts uses two libraries to accomplish this. `spring-cloud-contract-wiremock` is used to mock http connections and `spring-cloud-starter-contract-stub-runner` is used to run the stubs generated by the consumer tests. Stubrunner can also mock your cloud tooling like the service discovery service in this workshop, allowing for completely isolated tests of a service. In this task a test wil be added to test the existing API call. The test will use the stubs and an autoconfigured stubrunner to validate the client.
 
 **Task 2.1** Add the `spring-cloud-contract-wiremock` and `spring-cloud-starter-contract-stub-runner` dependencies to the frontend module's pom file under TODO 2.1. <br>
 *(If necesary, refresh your maven dependencies!)*
@@ -168,7 +174,7 @@ Cloud Contracts uses two libraries to accomplish this `spring-cloud-contract-wir
 > The "work-offline" property will tell stubrunner to download the artifact from your local .m2 repository.
 
 **Task 2.3** Create a new test class in the frontend module in the package `nl.johannisk.cloud.frontend.client` named `NumberServiceClientTest`. You might need to create the test folder first, make sure you create the NumberServiceClientTest in the correct test package.
-> The full path from the projecet root should be frontend -> src -> test -> java
+> The full path from the project root should be frontend -> src -> test -> java -> nl -> johannisk -> cloud -> frontend -> client
 
 	package nl.johannisk.cloud.frontend.client;
 	
@@ -241,9 +247,9 @@ These lines show the stubs are downloaded and instantiated on port 64914
 
 ## Task 3: Consuming a new service endpoint using cloud contracts
 ###Introduction
-In task 1 support for cloud contracts was added to the producers code. By running `mvn clean install` the stubs jar was created and uploaded to the local mvn repository. In task 2 support for cloud contracts was added to the consumers code, which also used the local repository to download the stubs jar from.
-We will be adding a new contract in this task, directly in the producers code. Normally this new contract would be added in a local checkout of the producers code. To have the contract implemented by the producer the contract would be submitted to the producer via a merge request. This is out of scope for the workshop, but it's important to remember this, since we will be coming back to this point.
-The contract will be added in the form of a groovy contract much like the contract which is already in place. It will define the proposed request form, as well as the expected response. Before going to the producers code in Task 4, we'll create a full implementation of the client purely based on the stubs generated by the contract definition.
+In task 1 support for cloud contracts was added to the producers' code. By running `mvn clean install` the stubs jar was created and uploaded to the local Maven repository. In task 2 support for cloud contracts was added to the consumers' code, which also used the local repository to download the stubs jar from.
+We will be adding a new contract in this task, directly in the producers' code. Normally this new contract would be added in a local checkout of the producers' code. To have the contract implemented by the producer the contract would be submitted to the producer via a merge request. This is out of scope for the workshop, but it's important to remember this, since we will be coming back to this point.
+The contract will be added in the form of a groovy contract much like the contract which is already in place. It will define the proposed request form, as well as the expected response. Before going to the producers' code in Task 4, we'll create a full implementation of the client purely based on the stubs generated by the contract definition.
 
 **Task 3.1** Add a new contract next to the `returnPrimesFrom1to10.groovy` file named `returnFibonacciUntil10.groovy`
 
