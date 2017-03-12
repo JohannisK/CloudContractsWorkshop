@@ -366,7 +366,7 @@ This test should be full of compiler errors, so let's fix those.
     }
  > Note (for the last time) that the endpoint to post to matches the endpoint defined in the contract 
  > 
- > Please check the modified files to fix any import problems. They shouldn't occur if you followed this workshop, but might if you mixed up or changed packaging.
+ > Please check the modified files to fix any import problems that might occur if you used package names deviating from the workshop.
  
 **Task 3.7** Run the newly created test in NumberServiceClientTest either from the IDE or with a `mvn clean install` in the frontend module.
 
